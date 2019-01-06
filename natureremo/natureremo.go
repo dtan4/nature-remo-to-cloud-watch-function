@@ -17,6 +17,13 @@ type Client struct {
 	api *natureremoapi.Client
 }
 
+// NewClient creates new Client object with a configured API client
+func NewClient(accessToken string) *Client {
+	return &Client{
+		api: natureremoapi.NewClient(accessToken),
+	}
+}
+
 // FetchTemperature fetches the current room temperature from the specified device
 func (c *Client) FetchTemperature(ctx context.Context, deviceID string) (float64, error) {
 	devices, err := c.api.DeviceService.GetAll(ctx)

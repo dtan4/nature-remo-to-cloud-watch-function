@@ -37,6 +37,26 @@ func (f fakeDeviceService) UpdateHumidityOffset(ctx context.Context, device *nat
 	return nil, nil
 }
 
+func TestNewClient(t *testing.T) {
+	testcases := []struct {
+		accessToken string
+	}{
+		{
+			accessToken: "",
+		},
+		{
+			accessToken: "dummyaccesstoken",
+		},
+	}
+
+	for _, tc := range testcases {
+		got := NewClient(tc.accessToken)
+		if got == nil {
+			t.Error("want client, got nil")
+		}
+	}
+}
+
 func TestFetchTemperature(t *testing.T) {
 	testcases := []struct {
 		deviceID string
