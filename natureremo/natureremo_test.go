@@ -66,7 +66,7 @@ func TestFetchTemperature(t *testing.T) {
 		{
 			deviceID: "91246eb0-4e06-4f1a-a400-42874839aee1",
 			devices: []*natureremoapi.Device{
-				&natureremoapi.Device{
+				{
 					DeviceCore: natureremoapi.DeviceCore{
 						ID:   "1ffdbcec-12ed-4694-aadc-3f773d8363d4",
 						Name: "Main Room",
@@ -77,7 +77,7 @@ func TestFetchTemperature(t *testing.T) {
 						},
 					},
 				},
-				&natureremoapi.Device{
+				{
 					DeviceCore: natureremoapi.DeviceCore{
 						ID:   "91246eb0-4e06-4f1a-a400-42874839aee1",
 						Name: "Bed Room",
@@ -132,7 +132,7 @@ func TestFetchTemperature_error(t *testing.T) {
 			subtitle: "device not found",
 			deviceID: "91246eb0-4e06-4f1a-a400-42874839aee1",
 			devices: []*natureremoapi.Device{
-				&natureremoapi.Device{
+				{
 					DeviceCore: natureremoapi.DeviceCore{
 						ID:   "1ffdbcec-12ed-4694-aadc-3f773d8363d4",
 						Name: "Main Room",
@@ -150,7 +150,7 @@ func TestFetchTemperature_error(t *testing.T) {
 			subtitle: "temperature not found",
 			deviceID: "91246eb0-4e06-4f1a-a400-42874839aee1",
 			devices: []*natureremoapi.Device{
-				&natureremoapi.Device{
+				{
 					DeviceCore: natureremoapi.DeviceCore{
 						ID:   "91246eb0-4e06-4f1a-a400-42874839aee1",
 						Name: "Main Room",
