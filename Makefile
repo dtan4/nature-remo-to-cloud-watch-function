@@ -1,10 +1,13 @@
-.PHONY: deps clean build
+NOVENDOR := $(shell go list ./... | grep -v vendor)
 
-deps:
-	go get -u ./...
-
-clean: 
+.PHONY: clean
+clean:
 	rm -rf ./hello-world/hello-world
-	
+
+.PHONY: build
 build:
-	GOOS=linux GOARCH=amd64 go build -o hello-world/hello-world ./hello-world
+	GO111MODULE=on GOOS=linux GOARCH=amd64 go build -o hello-world/hello-world ./hello-world
+
+.PHONY: test
+test:
+	GO111MODULE=on go test -cover -v $(NOVENDOR)
