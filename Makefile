@@ -8,4 +8,4 @@ mockgen:
 
 .PHONY: test
 test:
-	GO111MODULE=on go test -coverpkg=./... -coverprofile=coverage.txt -v ./...
+	GO111MODULE=on go test -coverprofile=coverage.txt -v `go list ./... | grep -v aws/mock`
