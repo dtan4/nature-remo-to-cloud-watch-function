@@ -7,6 +7,11 @@ import (
 	natureremoapi "github.com/tenntenn/natureremo"
 )
 
+// ClientInterface is an interface of a wrapper of Nature Remo API client
+type ClientInterface interface {
+	FetchTemperature(ctx context.Context, deviceID string) (float64, error)
+}
+
 // Client represents a wrapper of Nature Remo API client
 type Client struct {
 	api *natureremoapi.Client
