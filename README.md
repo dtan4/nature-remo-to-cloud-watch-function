@@ -1,6 +1,7 @@
 # nature-remo-to-cloud-watch-function
 
 [![Build Status](https://travis-ci.com/dtan4/nature-remo-to-cloud-watch-function.svg?branch=master)](https://travis-ci.com/dtan4/nature-remo-to-cloud-watch-function)
+[![codecov](https://codecov.io/gh/dtan4/nature-remo-to-cloud-watch-function/branch/master/graph/badge.svg)](https://codecov.io/gh/dtan4/nature-remo-to-cloud-watch-function)
 
 This is a sample template for nature-remo-to-cloud-watch-function - Below is a brief explanation of what we have generated for you:
 
