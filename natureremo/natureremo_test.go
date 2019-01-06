@@ -106,7 +106,7 @@ func TestFetchTemperature_error(t *testing.T) {
 			subtitle: "api error",
 			deviceID: "91246eb0-4e06-4f1a-a400-42874839aee1",
 			err:      fmt.Errorf("unexpected error"),
-			want:     `cannot get all devices`,
+			want:     `cannot get all devices: unexpected error`,
 		},
 		{
 			subtitle: "device not found",
