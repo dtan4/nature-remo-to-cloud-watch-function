@@ -26,6 +26,19 @@ func NewClient(api ssmiface.SSMAPI) *Client {
 	}
 }
 
+// LoadSecret retrieves decrypted secret from Parameter Store
+func (c *Client) LoadSecret(name string) (string, error) {
+	resp, err := c.api.GetParameter(&ssm.GetParameterInput{
+		Name:           aws.String(name),
+		WithDecryption: aws.Bool(true),
+	})
+	if err != nil {
+		return "", errors.Wrap(err, "cannot retrieve secret from Parameter Store")
+	}
+
+	return aws.StringValue(resp.Parameter.Value), nil
+}
+
 // LoadSecrets retrieves decrypted secrets from Parameter Store
 func (c *Client) LoadSecrets(path string) (map[string]string, error) {
 	resp, err := c.api.GetParametersByPath(&ssm.GetParametersByPathInput{
