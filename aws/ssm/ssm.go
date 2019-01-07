@@ -9,7 +9,7 @@ import (
 
 // ClientInterface is an interface of a wrapper of SSM API client
 type ClientInterface interface {
-	LoadSecrets(path string) (map[string]string, error)
+	LoadSecret(name string) (string, error)
 }
 
 // Client is a wrapper of SSM API client
