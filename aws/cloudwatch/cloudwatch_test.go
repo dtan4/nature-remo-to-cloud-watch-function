@@ -22,7 +22,7 @@ func TestNewClient(t *testing.T) {
 
 	got := NewClient(cloudwatchMock)
 	if got == nil {
-		t.Error("want objcet, got nil")
+		t.Error("want object, got nil")
 	}
 }
 
