@@ -38,7 +38,7 @@ func Handler(ctx context.Context) error {
 		return errors.Wrap(err, "cannot fetch room temperature")
 	}
 
-	if err := CloudWatchClient.PutTemperature(time.Now(), deviceID, temperature); err != nil {
+	if err := CloudWatchClient.PutTemperature(ctx, time.Now(), deviceID, temperature); err != nil {
 		return errors.Wrap(err, "cannot put room temperature")
 	}
 

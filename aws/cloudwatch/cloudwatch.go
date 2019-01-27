@@ -1,6 +1,7 @@
 package cloudwatch
 
 import (
+	"context"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -17,7 +18,7 @@ const (
 
 // ClientInterface is an interface of a wrapper of CloudWatch API client
 type ClientInterface interface {
-	PutTemperature(timestamp time.Time, deviceID string, temperature float64) error
+	PutTemperature(ctx context.Context, timestamp time.Time, deviceID string, temperature float64) error
 }
 
 // Client is a wrapper of CloudWatch API client
@@ -33,8 +34,8 @@ func NewClient(api cloudwatchiface.CloudWatchAPI) *Client {
 }
 
 // PutTemperature puts the given room temperature as CloudWatch metric
-func (c *Client) PutTemperature(timestamp time.Time, deviceID string, temperature float64) error {
-	_, err := c.api.PutMetricData(&cloudwatch.PutMetricDataInput{
+func (c *Client) PutTemperature(ctx context.Context, timestamp time.Time, deviceID string, temperature float64) error {
+	_, err := c.api.PutMetricDataWithContext(ctx, &cloudwatch.PutMetricDataInput{
 		Namespace: aws.String(metricNamespace),
 		MetricData: []*cloudwatch.MetricDatum{
 			{

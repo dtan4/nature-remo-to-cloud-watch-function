@@ -11,7 +11,7 @@ type fakeCloudWatchClient struct {
 	Err error
 }
 
-func (c fakeCloudWatchClient) PutTemperature(timestamp time.Time, deviceID string, temperature float64) error {
+func (c fakeCloudWatchClient) PutTemperature(ctx context.Context, timestamp time.Time, deviceID string, temperature float64) error {
 	if c.Err != nil {
 		return c.Err
 	}

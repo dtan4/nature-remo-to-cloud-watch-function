@@ -1,6 +1,7 @@
 package cloudwatch
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -43,8 +44,9 @@ func TestPutTemperature(t *testing.T) {
 	}
 
 	for _, tc := range testcases {
+		ctx := context.Background()
 		cloudwatchMock := mock.NewMockCloudWatchAPI(ctrl)
-		cloudwatchMock.EXPECT().PutMetricData(&cloudwatch.PutMetricDataInput{
+		cloudwatchMock.EXPECT().PutMetricDataWithContext(ctx, &cloudwatch.PutMetricDataInput{
 			Namespace: aws.String("NatureRemo/RoomMetrics"),
 			MetricData: []*cloudwatch.MetricDatum{
 				{
@@ -65,7 +67,7 @@ func TestPutTemperature(t *testing.T) {
 			api: cloudwatchMock,
 		}
 
-		err := client.PutTemperature(tc.timestamp, tc.deviceID, tc.temperature)
+		err := client.PutTemperature(ctx, tc.timestamp, tc.deviceID, tc.temperature)
 		if err != nil {
 			t.Errorf("want no error, got: %s", err)
 		}
@@ -94,8 +96,9 @@ func TestPutTemperature_error(t *testing.T) {
 
 	for _, tc := range testcases {
 		t.Run(tc.subtitle, func(t *testing.T) {
+			ctx := context.Background()
 			cloudwatchMock := mock.NewMockCloudWatchAPI(ctrl)
-			cloudwatchMock.EXPECT().PutMetricData(&cloudwatch.PutMetricDataInput{
+			cloudwatchMock.EXPECT().PutMetricDataWithContext(ctx, &cloudwatch.PutMetricDataInput{
 				Namespace: aws.String("NatureRemo/RoomMetrics"),
 				MetricData: []*cloudwatch.MetricDatum{
 					{
@@ -116,7 +119,7 @@ func TestPutTemperature_error(t *testing.T) {
 				api: cloudwatchMock,
 			}
 
-			err := client.PutTemperature(tc.timestamp, tc.deviceID, tc.temperature)
+			err := client.PutTemperature(ctx, tc.timestamp, tc.deviceID, tc.temperature)
 			if err == nil {
 				t.Fatalf("want error, got nil")
 			}
