@@ -2,6 +2,7 @@ package natureremo
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/pkg/errors"
 	natureremoapi "github.com/tenntenn/natureremo"
@@ -18,9 +19,15 @@ type Client struct {
 }
 
 // NewClient creates new Client object with a configured API client
-func NewClient(accessToken string) *Client {
+func NewClient(accessToken string, httpClient *http.Client) *Client {
+	api := natureremoapi.NewClient(accessToken)
+
+	if httpClient != nil {
+		api.HTTPClient = httpClient
+	}
+
 	return &Client{
-		api: natureremoapi.NewClient(accessToken),
+		api: api,
 	}
 }
 
