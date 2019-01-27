@@ -24,7 +24,7 @@ type fakeSSMClient struct {
 	Value string
 }
 
-func (c fakeSSMClient) LoadSecret(name string) (string, error) {
+func (c fakeSSMClient) LoadSecret(ctx context.Context, name string) (string, error) {
 	if c.Err != nil {
 		return "", c.Err
 	}

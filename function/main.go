@@ -28,7 +28,7 @@ var (
 )
 
 func Handler(ctx context.Context) error {
-	deviceID, err := SSMClient.LoadSecret(deviceIDKey)
+	deviceID, err := SSMClient.LoadSecret(ctx, deviceIDKey)
 	if err != nil {
 		return errors.Wrap(err, "cannot load device ID")
 	}
@@ -58,7 +58,7 @@ func main() {
 	xray.AWS(ssmapi.Client)
 	SSMClient = ssm.NewClient(ssmapi)
 
-	accessToken, err := SSMClient.LoadSecret(natureRemoAccessTokenKey)
+	accessToken, err := SSMClient.LoadSecret(context.Background(), natureRemoAccessTokenKey)
 	if err != nil {
 		panic(err)
 	}
