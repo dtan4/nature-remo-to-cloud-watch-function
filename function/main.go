@@ -28,8 +28,6 @@ var (
 )
 
 func Handler(ctx context.Context) error {
-	xray.Configure(xray.Config{LogLevel: "trace"})
-
 	deviceID, err := SSMClient.LoadSecret(deviceIDKey)
 	if err != nil {
 		return errors.Wrap(err, "cannot load device ID")
@@ -48,7 +46,9 @@ func Handler(ctx context.Context) error {
 }
 
 func main() {
-	sess := session.New()
+	xray.Configure(xray.Config{LogLevel: "trace"})
+
+	sess := session.Must(session.NewSession())
 
 	cwapi := cloudwatchapi.New(sess)
 	xray.AWS(cwapi.Client)
