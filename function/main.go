@@ -46,8 +46,6 @@ func RealHandler(ctx context.Context) error {
 }
 
 func Handler(ctx context.Context) error {
-	xray.Configure(xray.Config{LogLevel: "trace"})
-
 	sess := session.Must(session.NewSession())
 
 	cwapi := cloudwatchapi.New(sess)
