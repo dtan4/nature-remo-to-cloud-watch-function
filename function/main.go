@@ -27,7 +27,7 @@ var (
 	NatureRemoClient natureremo.ClientInterface
 )
 
-func Handler(ctx context.Context) error {
+func RealHandler(ctx context.Context) error {
 	deviceID, err := SSMClient.LoadSecret(ctx, deviceIDKey)
 	if err != nil {
 		return errors.Wrap(err, "cannot load device ID")
@@ -45,7 +45,7 @@ func Handler(ctx context.Context) error {
 	return nil
 }
 
-func main() {
+func Handler(ctx context.Context) error {
 	xray.Configure(xray.Config{LogLevel: "trace"})
 
 	sess := session.Must(session.NewSession())
@@ -58,12 +58,16 @@ func main() {
 	xray.AWS(ssmapi.Client)
 	SSMClient = ssm.NewClient(ssmapi)
 
-	accessToken, err := SSMClient.LoadSecret(context.Background(), natureRemoAccessTokenKey)
+	accessToken, err := SSMClient.LoadSecret(ctx, natureRemoAccessTokenKey)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "cannot load Nature Remo access token")
 	}
 
 	NatureRemoClient = natureremo.NewClient(accessToken)
 
+	return RealHandler(ctx)
+}
+
+func main() {
 	lambda.Start(Handler)
 }
