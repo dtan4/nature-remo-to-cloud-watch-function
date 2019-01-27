@@ -1,6 +1,8 @@
 package ssm
 
 import (
+	"context"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ssm"
 	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
@@ -9,7 +11,7 @@ import (
 
 // ClientInterface is an interface of a wrapper of SSM API client
 type ClientInterface interface {
-	LoadSecret(name string) (string, error)
+	LoadSecret(ctx context.Context, name string) (string, error)
 }
 
 // Client is a wrapper of SSM API client
@@ -25,8 +27,8 @@ func NewClient(api ssmiface.SSMAPI) *Client {
 }
 
 // LoadSecret retrieves decrypted secret from Parameter Store
-func (c *Client) LoadSecret(name string) (string, error) {
-	resp, err := c.api.GetParameter(&ssm.GetParameterInput{
+func (c *Client) LoadSecret(ctx context.Context, name string) (string, error) {
+	resp, err := c.api.GetParameterWithContext(ctx, &ssm.GetParameterInput{
 		Name:           aws.String(name),
 		WithDecryption: aws.Bool(true),
 	})

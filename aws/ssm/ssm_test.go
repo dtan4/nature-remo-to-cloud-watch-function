@@ -1,6 +1,7 @@
 package ssm
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -41,8 +42,9 @@ func TestLoadSecret(t *testing.T) {
 
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
+			ctx := context.Background()
 			ssmMock := mock.NewMockSSMAPI(ctrl)
-			ssmMock.EXPECT().GetParameter(&ssm.GetParameterInput{
+			ssmMock.EXPECT().GetParameterWithContext(ctx, &ssm.GetParameterInput{
 				Name:           aws.String(tc.name),
 				WithDecryption: aws.Bool(true),
 			}).Return(&ssm.GetParameterOutput{
@@ -56,7 +58,7 @@ func TestLoadSecret(t *testing.T) {
 				api: ssmMock,
 			}
 
-			got, err := client.LoadSecret(tc.name)
+			got, err := client.LoadSecret(ctx, tc.name)
 			if err != nil {
 				t.Fatalf("want no error, got: %s", err)
 			}
@@ -84,8 +86,9 @@ func TestLoadSecret_error(t *testing.T) {
 
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
+			ctx := context.Background()
 			ssmMock := mock.NewMockSSMAPI(ctrl)
-			ssmMock.EXPECT().GetParameter(&ssm.GetParameterInput{
+			ssmMock.EXPECT().GetParameterWithContext(ctx, &ssm.GetParameterInput{
 				Name:           aws.String(tc.name),
 				WithDecryption: aws.Bool(true),
 			}).Return(nil, fmt.Errorf("unexpected error"))
@@ -94,7 +97,7 @@ func TestLoadSecret_error(t *testing.T) {
 				api: ssmMock,
 			}
 
-			_, err := client.LoadSecret(tc.name)
+			_, err := client.LoadSecret(ctx, tc.name)
 			if err == nil {
 				t.Fatal("want error, got: nil")
 			}

@@ -27,10 +27,8 @@ var (
 	NatureRemoClient natureremo.ClientInterface
 )
 
-func Handler(ctx context.Context) error {
-	xray.Configure(xray.Config{LogLevel: "trace"})
-
-	deviceID, err := SSMClient.LoadSecret(deviceIDKey)
+func RealHandler(ctx context.Context) error {
+	deviceID, err := SSMClient.LoadSecret(ctx, deviceIDKey)
 	if err != nil {
 		return errors.Wrap(err, "cannot load device ID")
 	}
@@ -40,15 +38,15 @@ func Handler(ctx context.Context) error {
 		return errors.Wrap(err, "cannot fetch room temperature")
 	}
 
-	if err := CloudWatchClient.PutTemperature(time.Now(), deviceID, temperature); err != nil {
+	if err := CloudWatchClient.PutTemperature(ctx, time.Now(), deviceID, temperature); err != nil {
 		return errors.Wrap(err, "cannot put room temperature")
 	}
 
 	return nil
 }
 
-func main() {
-	sess := session.New()
+func Handler(ctx context.Context) error {
+	sess := session.Must(session.NewSession())
 
 	cwapi := cloudwatchapi.New(sess)
 	xray.AWS(cwapi.Client)
@@ -58,12 +56,16 @@ func main() {
 	xray.AWS(ssmapi.Client)
 	SSMClient = ssm.NewClient(ssmapi)
 
-	accessToken, err := SSMClient.LoadSecret(natureRemoAccessTokenKey)
+	accessToken, err := SSMClient.LoadSecret(ctx, natureRemoAccessTokenKey)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "cannot load Nature Remo access token")
 	}
 
 	NatureRemoClient = natureremo.NewClient(accessToken)
 
+	return RealHandler(ctx)
+}
+
+func main() {
 	lambda.Start(Handler)
 }

@@ -11,7 +11,7 @@ type fakeCloudWatchClient struct {
 	Err error
 }
 
-func (c fakeCloudWatchClient) PutTemperature(timestamp time.Time, deviceID string, temperature float64) error {
+func (c fakeCloudWatchClient) PutTemperature(ctx context.Context, timestamp time.Time, deviceID string, temperature float64) error {
 	if c.Err != nil {
 		return c.Err
 	}
@@ -24,7 +24,7 @@ type fakeSSMClient struct {
 	Value string
 }
 
-func (c fakeSSMClient) LoadSecret(name string) (string, error) {
+func (c fakeSSMClient) LoadSecret(ctx context.Context, name string) (string, error) {
 	if c.Err != nil {
 		return "", c.Err
 	}
@@ -45,7 +45,7 @@ func (c fakeNatureRemoClient) FetchTemperature(ctx context.Context, deviceID str
 	return c.Temperature, nil
 }
 
-func TestHandler(t *testing.T) {
+func TestRealHandler(t *testing.T) {
 	testcases := []struct {
 		temperature float64
 		value       string
@@ -62,14 +62,14 @@ func TestHandler(t *testing.T) {
 		SSMClient = fakeSSMClient{Value: tc.value}
 		NatureRemoClient = fakeNatureRemoClient{Temperature: tc.temperature}
 
-		err := Handler(ctx)
+		err := RealHandler(ctx)
 		if err != nil {
 			t.Errorf("want no error, got: %s", err)
 		}
 	}
 }
 
-func TestHandler_error(t *testing.T) {
+func TestRealHandler_error(t *testing.T) {
 	testcases := []struct {
 		subtitle      string
 		cloudWatchErr error
@@ -101,7 +101,7 @@ func TestHandler_error(t *testing.T) {
 			SSMClient = fakeSSMClient{Err: tc.ssmErr}
 			NatureRemoClient = fakeNatureRemoClient{Err: tc.natureRemoErr}
 
-			err := Handler(ctx)
+			err := RealHandler(ctx)
 			if err == nil {
 				t.Fatalf("want error, got nil")
 			}
