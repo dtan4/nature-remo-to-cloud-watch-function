@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"github.com/dtan4/nature-remo-to-cloud-watch-function/aws/cloudwatch"
@@ -61,7 +62,7 @@ func Handler(ctx context.Context) error {
 		return errors.Wrap(err, "cannot load Nature Remo access token")
 	}
 
-	NatureRemoClient = natureremo.NewClient(accessToken)
+	NatureRemoClient = natureremo.NewClient(accessToken, xray.Client(http.DefaultClient))
 
 	return RealHandler(ctx)
 }

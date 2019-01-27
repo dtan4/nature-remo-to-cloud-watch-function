@@ -3,6 +3,7 @@ package natureremo
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"testing"
 
 	natureremoapi "github.com/tenntenn/natureremo"
@@ -40,17 +41,24 @@ func (f fakeDeviceService) UpdateHumidityOffset(ctx context.Context, device *nat
 func TestNewClient(t *testing.T) {
 	testcases := []struct {
 		accessToken string
+		httpClient  *http.Client
 	}{
 		{
 			accessToken: "",
+			httpClient:  nil,
+		},
+		{
+			accessToken: "",
+			httpClient:  http.DefaultClient,
 		},
 		{
 			accessToken: "dummyaccesstoken",
+			httpClient:  nil,
 		},
 	}
 
 	for _, tc := range testcases {
-		got := NewClient(tc.accessToken)
+		got := NewClient(tc.accessToken, tc.httpClient)
 		if got == nil {
 			t.Error("want client, got nil")
 		}
