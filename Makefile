@@ -12,6 +12,10 @@ bin/$(NAME): $(SRCS)
 generate:
 	docker-compose run --rm go generate -v ./...
 
+.PHONY: setup
+setup:
+	docker-compose build
+
 .PHONY: test
 test:
 	docker-compose run --rm go test -coverprofile=coverage.txt -v `docker-compose run -T --rm go list ./... | grep -v aws/mock`

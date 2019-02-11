@@ -12,6 +12,9 @@ branches:
   only:
     - master
 
+install:
+  - make setup
+
 before_script:
   - make generate
 
