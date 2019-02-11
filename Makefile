@@ -13,8 +13,15 @@ generate:
 	docker-compose run --rm go generate -v ./...
 
 .PHONY: setup
-setup:
-	docker-compose build
+setup: setup-go setup-sam
+
+.PHONY: setup-go
+setup-go:
+	docker-compose build go
+
+.PHONY: setup-sam
+setup-sam:
+	docker-compose build sam
 
 .PHONY: test
 test:
