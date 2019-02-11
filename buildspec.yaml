@@ -1,6 +1,6 @@
 version: 0.2
 
-phrases:
+phases:
   pre_build:
     commands:
       - make -v
