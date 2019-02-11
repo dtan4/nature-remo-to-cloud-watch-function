@@ -1,0 +1,12 @@
+version: 0.2
+
+phrases:
+  pre_build:
+    commands:
+      - make -v
+      - docker version
+      - docker-compose version
+
+  build:
+    commands:
+      - echo "foobarbaz"
