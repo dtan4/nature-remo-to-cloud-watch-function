@@ -1,11 +1,17 @@
-.PHONY: generate
-generate: mockgen
-	go generate -v ./...
+NAME := nature-remo-to-cloud-watch-function
 
-.PHONY: mockgen
-mockgen:
-	go install -v github.com/golang/mock/mockgen
+SRCS    := $(shell find . -type f -name '*.go')
+LDFLAGS := -ldflags="-s -w -extldflags \"-static\""
+
+.DEFAULT_GOAL := bin/$(NAME)
+
+bin/$(NAME): $(SRCS)
+	docker-compose run --rm -e CGO_ENABLED=0 go build $(LDFLAGS) -a -tags netgo -installsuffix netgo -o bin/$(NAME) github.com/dtan4/nature-remo-to-cloud-watch-function/function
+
+.PHONY: generate
+generate:
+	docker-compose run --rm go generate -v ./...
 
 .PHONY: test
 test:
-	GO111MODULE=on go test -coverprofile=coverage.txt -v `go list ./... | grep -v aws/mock`
+	docker-compose run --rm go test -coverprofile=coverage.txt -v `docker-compose run -T --rm go list ./... | grep -v aws/mock`
