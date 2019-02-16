@@ -28,6 +28,10 @@ services:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_DEFAULT_REGION
+      # for CodeBuild
+      - AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
+      - AWS_EXECUTION_ENV
+    network_mode: "host" # to see container metadata
     volumes:
       - $PWD:/app
     working_dir: /app

@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - make setup
+
+  build:
+    commands:
+      - make
+
+  post_build:
+    commands:
+      - make deploy
