@@ -11,4 +11,5 @@ phases:
 
   post_build:
     commands:
+      - env | grep AWS_
       - make deploy
