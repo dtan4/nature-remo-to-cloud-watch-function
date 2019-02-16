@@ -16,12 +16,12 @@ A Lambda function which fetches the room temperature from [Nature Remo](https://
 
 ### Parameters
 
-These keys must be set in [System Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html).
+These parameters must be set in [System Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) with encryption.
 
 | key                                                     | description                                                                                                            |
 |---------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | `/natureRemoToCloudWatchFunction/natureRemoAccessToken` | Nature Remo Cloud API access token                                                                                     |
-| `/natureRemoToCloudWatchFunction/deviceID`              | Device ID retrieved from [`https://api.nature.global/1/devices`](http://swagger.nature.global/#/default/get_1_devices) |
+| `/natureRemoToCloudWatchFunction/deviceID`              | Device ID retrieved from [List Devices API](http://swagger.nature.global/#/default/get_1_devices) |
 
 ## Author
 
