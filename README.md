@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/dtan4/nature-remo-to-cloud-watch-function/branch/master/graph/badge.svg)](https://codecov.io/gh/dtan4/nature-remo-to-cloud-watch-function)
 (private: ![CodeBuild](https://codebuild.ap-northeast-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiK3NNalYweUhUbDVlbzVuQkNTWFdyeERjRGxSRVl0dXFvSENETXZIUEhrT0xQc3kzZ0tOV1N3dGJzV3F6RThWRjRRNzJHdUZ2SVYwU1ZWREgwTGVSRlZJPSIsIml2UGFyYW1ldGVyU3BlYyI6IndZM1FmYlB6bW96ZGVtQ2UiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master))
 
-A Lambda function which fetches the room temperature from [Nature Remo](https://nature.global/en/top) [Cloud API](https://developer.nature.global/en/overview), then posts it to CloudWatch Metrics.
+A Lambda function which fetches the room temperature from [Nature Remo](https://nature.global/en/top) [Cloud API](https://developer.nature.global/en/overview), then posts it to CloudWatch Metrics every minute.
 
 ![image](https://user-images.githubusercontent.com/680124/52900772-95da0d00-323d-11e9-98d4-6c3a64cd54dc.png)
 
