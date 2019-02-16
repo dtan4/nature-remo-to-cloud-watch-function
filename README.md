@@ -23,6 +23,44 @@ These parameters must be set in [System Manager Parameter Store](https://docs.aw
 | `/natureRemoToCloudWatchFunction/natureRemoAccessToken` | Nature Remo Cloud API access token                                                                                     |
 | `/natureRemoToCloudWatchFunction/deviceID`              | Device ID retrieved from [List Devices API](http://swagger.nature.global/#/default/get_1_devices) |
 
+## Development
+
+All tasks such as building binary, testing, deploying are done in Docker container.
+
+```bash
+make setup
+```
+
+### Build a binary
+
+Please make sure that Linux 64-bit (`GOOS=linux GOARCH=amd64`) binary will be built regardless of host OS.
+
+```bash
+make
+```
+
+### Run tests
+
+```bash
+make test
+```
+
+### Deploy
+
+The following environment variables are required to deploy:
+
+- AWS credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`)
+- `AWS_ACCOUNT_ID`
+  - Your AWS account id
+- `AWS_S3_BUCKET`
+  - S3 bucket to store Lambda artifact
+- `AWS_CLOUDFORMATION_STACK_NAME`
+  - CloudFormation stack name to use
+
+```bash
+make deploy
+```
+
 ## Author
 
 Daisuke Fujita ([@dtan4](https://github.com/dtan4))
