@@ -13,7 +13,11 @@ generate:
 	docker-compose run --rm go generate -v ./...
 
 .PHONY: setup
-setup: setup-go setup-sam
+setup: setup-envsubst setup-go setup-sam
+
+.PHONY: setup-envsubst
+setup-envsubst:
+	docker-compose build envsubst
 
 .PHONY: setup-go
 setup-go:
