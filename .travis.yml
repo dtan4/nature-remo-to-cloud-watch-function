@@ -1,4 +1,6 @@
 language: go
+services:
+  - docker
 
 go:
   - '1.11.x'
@@ -9,6 +11,9 @@ env:
 branches:
   only:
     - master
+
+install:
+  - make setup-go
 
 before_script:
   - make generate

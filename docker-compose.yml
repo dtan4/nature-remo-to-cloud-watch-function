@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  envsubst:
+    build:
+      dockerfile: dockerfiles/Dockerfile-envsubst
+      context: .
+    entrypoint: envsubst
+
+  go:
+    build:
+      dockerfile: dockerfiles/Dockerfile-go
+      context: .
+    entrypoint: go
+    environment:
+      - GO111MODULE=on
+    volumes:
+      - $PWD:/go/src/github.com/dtan4/nature-remo-to-cloud-watch-function
+      - $GOPATH/pkg/mod:/go/pkg/mod
+    working_dir: /go/src/github.com/dtan4/nature-remo-to-cloud-watch-function
+
+  sam:
+    build:
+      dockerfile: dockerfiles/Dockerfile-sam
+      context: .
+    entrypoint: sam
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION
+    volumes:
+      - $PWD:/app
+    working_dir: /app
