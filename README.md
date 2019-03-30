@@ -50,8 +50,6 @@ make test
 The following environment variables are required to deploy:
 
 - AWS credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`)
-- `AWS_ACCOUNT_ID`
-  - Your AWS account id
 - `AWS_S3_BUCKET`
   - S3 bucket to store Lambda artifact
 - `AWS_CLOUDFORMATION_STACK_NAME`
