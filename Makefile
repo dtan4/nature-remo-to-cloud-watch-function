@@ -10,10 +10,6 @@ bin/$(NAME): $(SRCS)
 
 .PHONY: deploy
 deploy: bin/$(NAME)
-ifeq ($(AWS_ACCOUNT_ID),)
-	@echo "AWS_ACCOUNT_ID must be set" >&2
-	@exit 1
-endif
 ifeq ($(AWS_S3_BUCKET),)
 	@echo "AWS_S3_BUCKET must be set" >&2
 	@exit 1
@@ -22,7 +18,6 @@ ifeq ($(AWS_CLOUDFORMATION_STACK_NAME),)
 	@echo "AWS_CLOUDFORMATION_STACK_NAME must be set" >&2
 	@exit 1
 endif
-	docker-compose run --rm -e AWS_ACCOUNT_ID=$(AWS_ACCOUNT_ID) envsubst < template.yaml.template > template.yaml
 	docker-compose run --rm sam package --template-file template.yaml --s3-bucket $(AWS_S3_BUCKET) --output-template-file packaged.yaml
 	docker-compose run --rm sam deploy --template-file packaged.yaml --stack-name $(AWS_CLOUDFORMATION_STACK_NAME) --capabilities CAPABILITY_IAM
 
@@ -31,11 +26,7 @@ generate:
 	docker-compose run --rm go generate -v ./...
 
 .PHONY: setup
-setup: setup-envsubst setup-go setup-sam
-
-.PHONY: setup-envsubst
-setup-envsubst:
-	docker-compose build envsubst
+setup: setup-go setup-sam
 
 .PHONY: setup-go
 setup-go:

@@ -22,7 +22,7 @@ Resources:
             - Effect: Allow
               Action:
                 - "ssm:Get*"
-              Resource: "arn:aws:ssm:ap-northeast-1:${AWS_ACCOUNT_ID}:parameter/natureRemoToCloudWatchFunction/*"
+              Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/natureRemoToCloudWatchFunction/*"
             - Effect: Allow
               Action:
                 - "cloudwatch:PutMetricData"
