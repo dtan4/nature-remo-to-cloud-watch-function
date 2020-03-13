@@ -5,31 +5,31 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dtan4/nature-remo-to-cloud-watch-function/aws/mock"
-
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/ssm"
-	"github.com/golang/mock/gomock"
+	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
 )
 
-//go:generate mockgen -source $GOPATH/pkg/mod/github.com/aws/aws-sdk-go@v1.16.14/service/ssm/ssmiface/interface.go -destination ../mock/ssm.go -package mock
+type mockSSMAPI struct {
+	ssmiface.SSMAPI
+	getParameterWithContextFunc func(ctx aws.Context, input *ssm.GetParameterInput, opts ...request.Option) (*ssm.GetParameterOutput, error)
+}
+
+func (m *mockSSMAPI) GetParameterWithContext(ctx aws.Context, input *ssm.GetParameterInput, opts ...request.Option) (*ssm.GetParameterOutput, error) {
+	return m.getParameterWithContextFunc(ctx, input, opts...)
+}
 
 func TestNewClient(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+	api := &mockSSMAPI{}
+	client := NewClient(api)
 
-	ssmMock := mock.NewMockSSMAPI(ctrl)
-
-	got := NewClient(ssmMock)
-	if got == nil {
-		t.Error("want object, got nil")
+	if client.api != api {
+		t.Error("api does not match")
 	}
 }
 
 func TestLoadSecret(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
 	testcases := []struct {
 		name string
 		want string
@@ -43,19 +43,18 @@ func TestLoadSecret(t *testing.T) {
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
-			ssmMock := mock.NewMockSSMAPI(ctrl)
-			ssmMock.EXPECT().GetParameterWithContext(ctx, &ssm.GetParameterInput{
-				Name:           aws.String(tc.name),
-				WithDecryption: aws.Bool(true),
-			}).Return(&ssm.GetParameterOutput{
-				Parameter: &ssm.Parameter{
-					Name:  aws.String("/foobarbaz/foo"),
-					Value: aws.String("abcdef"),
-				},
-			}, nil)
 
 			client := &Client{
-				api: ssmMock,
+				api: &mockSSMAPI{
+					getParameterWithContextFunc: func(ctx aws.Context, input *ssm.GetParameterInput, opts ...request.Option) (*ssm.GetParameterOutput, error) {
+						return &ssm.GetParameterOutput{
+							Parameter: &ssm.Parameter{
+								Name:  aws.String("/foobarbaz/foo"),
+								Value: aws.String("abcdef"),
+							},
+						}, nil
+					},
+				},
 			}
 
 			got, err := client.LoadSecret(ctx, tc.name)
@@ -71,15 +70,14 @@ func TestLoadSecret(t *testing.T) {
 }
 
 func TestLoadSecret_error(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
 	testcases := []struct {
 		name string
+		err  string
 		want string
 	}{
 		{
 			name: "/foobarbaz/foo",
+			err:  "unexpected error",
 			want: "cannot retrieve secret from Parameter Store: unexpected error",
 		},
 	}
@@ -87,14 +85,13 @@ func TestLoadSecret_error(t *testing.T) {
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
-			ssmMock := mock.NewMockSSMAPI(ctrl)
-			ssmMock.EXPECT().GetParameterWithContext(ctx, &ssm.GetParameterInput{
-				Name:           aws.String(tc.name),
-				WithDecryption: aws.Bool(true),
-			}).Return(nil, fmt.Errorf("unexpected error"))
 
 			client := &Client{
-				api: ssmMock,
+				api: &mockSSMAPI{
+					getParameterWithContextFunc: func(ctx aws.Context, input *ssm.GetParameterInput, opts ...request.Option) (*ssm.GetParameterOutput, error) {
+						return nil, fmt.Errorf(tc.err)
+					},
+				},
 			}
 
 			_, err := client.LoadSecret(ctx, tc.name)
