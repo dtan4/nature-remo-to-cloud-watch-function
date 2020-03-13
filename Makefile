@@ -34,4 +34,4 @@ setup-sam:
 
 .PHONY: test
 test:
-	docker-compose run --rm go test -coverprofile=coverage.txt -v `docker-compose run -T --rm go list ./... | grep -v aws/mock`
+	go test -coverpkg=./... -coverprofile=coverage.txt -v ./...

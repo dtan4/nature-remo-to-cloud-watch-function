@@ -1,6 +1,4 @@
 language: go
-services:
-  - docker
 
 go:
   - '1.12.x'
@@ -11,9 +9,6 @@ env:
 branches:
   only:
     - master
-
-install:
-  - make setup-go
 
 script:
   - make test
