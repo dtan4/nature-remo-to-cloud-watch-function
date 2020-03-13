@@ -6,31 +6,31 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dtan4/nature-remo-to-cloud-watch-function/aws/mock"
-
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
-	"github.com/golang/mock/gomock"
+	"github.com/aws/aws-sdk-go/service/cloudwatch/cloudwatchiface"
 )
 
-//go:generate mockgen -source $GOPATH/pkg/mod/github.com/aws/aws-sdk-go@v1.16.14/service/cloudwatch/cloudwatchiface/interface.go -destination ../mock/cloudwatch.go -package mock
+type mockCloudWatchAPI struct {
+	cloudwatchiface.CloudWatchAPI
+	putMetricDataWithContextFunc func(ctx aws.Context, input *cloudwatch.PutMetricDataInput, opts ...request.Option) (*cloudwatch.PutMetricDataOutput, error)
+}
+
+func (m *mockCloudWatchAPI) PutMetricDataWithContext(ctx aws.Context, input *cloudwatch.PutMetricDataInput, opts ...request.Option) (*cloudwatch.PutMetricDataOutput, error) {
+	return m.putMetricDataWithContextFunc(ctx, input, opts...)
+}
 
 func TestNewClient(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+	api := &mockCloudWatchAPI{}
+	client := NewClient(api)
 
-	cloudwatchMock := mock.NewMockCloudWatchAPI(ctrl)
-
-	got := NewClient(cloudwatchMock)
-	if got == nil {
-		t.Error("want object, got nil")
+	if client.api != api {
+		t.Error("api does not match")
 	}
 }
 
 func TestPutTemperature(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
 	testcases := []struct {
 		timestamp   time.Time
 		deviceID    string
@@ -45,26 +45,13 @@ func TestPutTemperature(t *testing.T) {
 
 	for _, tc := range testcases {
 		ctx := context.Background()
-		cloudwatchMock := mock.NewMockCloudWatchAPI(ctrl)
-		cloudwatchMock.EXPECT().PutMetricDataWithContext(ctx, &cloudwatch.PutMetricDataInput{
-			Namespace: aws.String("NatureRemo/RoomMetrics"),
-			MetricData: []*cloudwatch.MetricDatum{
-				{
-					MetricName: aws.String("Temperature"),
-					Timestamp:  aws.Time(tc.timestamp),
-					Value:      aws.Float64(tc.temperature),
-					Dimensions: []*cloudwatch.Dimension{
-						{
-							Name:  aws.String("DeviceID"),
-							Value: aws.String(tc.deviceID),
-						},
-					},
-				},
-			},
-		}).Return(&cloudwatch.PutMetricDataOutput{}, nil)
 
 		client := &Client{
-			api: cloudwatchMock,
+			api: &mockCloudWatchAPI{
+				putMetricDataWithContextFunc: func(ctx aws.Context, input *cloudwatch.PutMetricDataInput, opts ...request.Option) (*cloudwatch.PutMetricDataOutput, error) {
+					return &cloudwatch.PutMetricDataOutput{}, nil
+				},
+			},
 		}
 
 		err := client.PutTemperature(ctx, tc.timestamp, tc.deviceID, tc.temperature)
@@ -75,14 +62,12 @@ func TestPutTemperature(t *testing.T) {
 }
 
 func TestPutTemperature_error(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
 	testcases := []struct {
 		subtitle    string
 		timestamp   time.Time
 		deviceID    string
 		temperature float64
+		err         string
 		want        string
 	}{
 		{
@@ -90,6 +75,7 @@ func TestPutTemperature_error(t *testing.T) {
 			timestamp:   time.Date(2019, 1, 7, 2, 39, 24, 0, time.UTC),
 			deviceID:    "91246eb0-4e06-4f1a-a400-42874839aee1",
 			temperature: 18.17,
+			err:         "unexpected error",
 			want:        "cannot put metric: unexpected error",
 		},
 	}
@@ -97,26 +83,13 @@ func TestPutTemperature_error(t *testing.T) {
 	for _, tc := range testcases {
 		t.Run(tc.subtitle, func(t *testing.T) {
 			ctx := context.Background()
-			cloudwatchMock := mock.NewMockCloudWatchAPI(ctrl)
-			cloudwatchMock.EXPECT().PutMetricDataWithContext(ctx, &cloudwatch.PutMetricDataInput{
-				Namespace: aws.String("NatureRemo/RoomMetrics"),
-				MetricData: []*cloudwatch.MetricDatum{
-					{
-						MetricName: aws.String("Temperature"),
-						Timestamp:  aws.Time(tc.timestamp),
-						Value:      aws.Float64(tc.temperature),
-						Dimensions: []*cloudwatch.Dimension{
-							{
-								Name:  aws.String("DeviceID"),
-								Value: aws.String(tc.deviceID),
-							},
-						},
-					},
-				},
-			}).Return(nil, fmt.Errorf("unexpected error"))
 
 			client := &Client{
-				api: cloudwatchMock,
+				api: &mockCloudWatchAPI{
+					putMetricDataWithContextFunc: func(ctx aws.Context, input *cloudwatch.PutMetricDataInput, opts ...request.Option) (*cloudwatch.PutMetricDataOutput, error) {
+						return nil, fmt.Errorf(tc.err)
+					},
+				},
 			}
 
 			err := client.PutTemperature(ctx, tc.timestamp, tc.deviceID, tc.temperature)

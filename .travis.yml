@@ -15,9 +15,6 @@ branches:
 install:
   - make setup-go
 
-before_script:
-  - make generate
-
 script:
   - make test
 

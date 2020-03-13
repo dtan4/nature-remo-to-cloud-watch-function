@@ -21,10 +21,6 @@ endif
 	docker-compose run --rm sam package --template-file template.yaml --s3-bucket $(AWS_S3_BUCKET) --output-template-file packaged.yaml
 	docker-compose run --rm sam deploy --template-file packaged.yaml --stack-name $(AWS_CLOUDFORMATION_STACK_NAME) --capabilities CAPABILITY_IAM
 
-.PHONY: generate
-generate:
-	docker-compose run --rm go generate -v ./...
-
 .PHONY: setup
 setup: setup-go setup-sam
 
