@@ -1,6 +1,7 @@
 # nature-remo-to-cloud-watch-function
 
 [![GitHub Actions](https://github.com/dtan4/nature-remo-to-cloud-watch-function/workflows/Test/badge.svg)](https://github.com/dtan4/nature-remo-to-cloud-watch-function/actions?query=workflow%3ATest+branch%3Amaster)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=dtan4/nature-remo-to-cloud-watch-function)](https://dependabot.com)
 [![codecov](https://codecov.io/gh/dtan4/nature-remo-to-cloud-watch-function/branch/master/graph/badge.svg)](https://codecov.io/gh/dtan4/nature-remo-to-cloud-watch-function)
 (private: ![CodeBuild](https://codebuild.ap-northeast-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiK3NNalYweUhUbDVlbzVuQkNTWFdyeERjRGxSRVl0dXFvSENETXZIUEhrT0xQc3kzZ0tOV1N3dGJzV3F6RThWRjRRNzJHdUZ2SVYwU1ZWREgwTGVSRlZJPSIsIml2UGFyYW1ldGVyU3BlYyI6IndZM1FmYlB6bW96ZGVtQ2UiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master))
 
