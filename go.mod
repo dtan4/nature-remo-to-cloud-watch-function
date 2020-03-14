@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.16.14
 	github.com/aws/aws-xray-sdk-go v1.0.0-rc.9
 	github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575 // indirect
-	github.com/golang/mock v1.2.0
+	github.com/golang/mock v1.4.2
 	github.com/pkg/errors v0.8.0
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/tenntenn/natureremo v0.0.1
