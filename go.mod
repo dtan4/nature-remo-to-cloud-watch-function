@@ -3,7 +3,7 @@ module github.com/dtan4/nature-remo-to-cloud-watch-function
 go 1.14
 
 require (
-	github.com/aws/aws-lambda-go v1.15.0
+	github.com/aws/aws-lambda-go v1.16.0
 	github.com/aws/aws-sdk-go v1.30.2
 	github.com/aws/aws-xray-sdk-go v1.0.0-rc.15
 	github.com/pkg/errors v0.9.1
