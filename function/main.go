@@ -10,6 +10,7 @@ import (
 	"github.com/dtan4/nature-remo-to-cloud-watch-function/aws/cloudwatch"
 	"github.com/dtan4/nature-remo-to-cloud-watch-function/aws/ssm"
 	"github.com/dtan4/nature-remo-to-cloud-watch-function/natureremo"
+	"github.com/dtan4/nature-remo-to-cloud-watch-function/version"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -88,7 +89,7 @@ func Handler(ctx context.Context) error {
 				Timeout: 5 * time.Second,
 			},
 
-			// Release: version.Version,
+			Release: version.Version,
 			// https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime
 			ServerName: os.Getenv("AWS_LAMBDA_FUNCTION_NAME"),
 		}); err != nil {
