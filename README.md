@@ -25,15 +25,7 @@ These parameters must be set in [System Manager Parameter Store](https://docs.aw
 
 ## Development
 
-All tasks such as building binary, testing, deploying are done in Docker container.
-
-```bash
-make setup
-```
-
 ### Build a binary
-
-Please make sure that Linux 64-bit (`GOOS=linux GOARCH=amd64`) binary will be built regardless of host OS.
 
 ```bash
 make
