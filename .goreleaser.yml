@@ -13,6 +13,8 @@ builds:
   - linux
   goarch:
   - amd64
+  ldflags:
+  - "-s -w -X github.com/dtan4/nature-remo-to-cloud-watch-function/version.Version={{.Version}} -X github.com/dtan4/nature-remo-to-cloud-watch-function/version.Commit={{.Commit}} -X github.com/nature-remo-to-cloud-watch-function/xlapse/version.Date={{.Date}}"
 
 archives:
 - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'

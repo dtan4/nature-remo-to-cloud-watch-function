@@ -22,6 +22,7 @@ These parameters must be set in [System Manager Parameter Store](https://docs.aw
 |---------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | `/natureRemoToCloudWatchFunction/natureRemoAccessToken` | Nature Remo Cloud API access token                                                                                     |
 | `/natureRemoToCloudWatchFunction/deviceID`              | Device ID retrieved from [List Devices API](http://swagger.nature.global/#/default/get_1_devices) |
+| `/natureRemoToCloudWatchFunction/sentryDsn`              | (Optional) Sentry DSN |
 
 ## Development
 
